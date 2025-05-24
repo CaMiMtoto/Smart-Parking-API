@@ -27,12 +27,22 @@ class DashboardController extends Controller
         // Earnings breakdown
         $earnings = [];
         if ($filter === 'weekly') {
-            $earnings = collect(range(0, 6))->map(function ($dayOffset) use ($today) {
-                $date = $today->copy()->subDays(6 - $dayOffset);
-                return ParkingSession::query()->whereDate('exit_time', $date)
-                    ->sum('amount');
+            // Start from this week's Monday
+            $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+
+            $earnings = collect(range(0, 6))->map(function ($dayOffset) use ($startOfWeek) {
+                $date = $startOfWeek->copy()->addDays($dayOffset)->toDateString(); // 'YYYY-MM-DD'
+                $dayName = Carbon::parse($date)->format('D'); // Mon, Tue, etc.
+
+                return [
+                    'date' => $date,
+                    'day' => $dayName,
+                    'amount' => ParkingSession::whereDate('exit_time', $date)->sum('amount'),
+                ];
             });
-        } elseif ($filter === 'monthly') {
+
+        }
+        elseif ($filter === 'monthly') {
             $earnings = collect(range(1, 12))->map(function ($month) {
                 return ParkingSession::query()->whereMonth('exit_time', $month)
                     ->whereYear('exit_time', now()->year)
