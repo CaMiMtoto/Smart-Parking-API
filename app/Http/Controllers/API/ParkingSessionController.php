@@ -80,6 +80,8 @@ class ParkingSessionController
         $session = ParkingSession::query()->create([
             'plate_number' => $plate,
             'phone' => $request->phone,
+            'entry_time' => now(),
+            'status' => 'active'
         ]);
 
         return response()->json([
