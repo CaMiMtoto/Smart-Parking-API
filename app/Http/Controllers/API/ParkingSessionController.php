@@ -6,6 +6,7 @@ use App\Models\ParkingSession;
 use App\Models\Rate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ParkingSessionController
 {
@@ -49,19 +50,25 @@ class ParkingSessionController
 
     public function checkIn(Request $request)
     {
-// TODO Track user who checked in the car.
-//        TODO Send  SMS on entry
+        // TODO Track user who checked in the car.
+        // TODO Send  SMS on entry
         $request->validate([
-            'plate_number' => 'required|string|max:20',
+            'plate_number' => [
+                'required',
+                'string',
+                'max:20',
+                'regex:/^[A-Za-z0-9 ]+$/'
+            ],
             'phone' => 'nullable|string|max:15',
         ]);
 
-        $plate = strtoupper($request->plate_number);
 
-        // Check for existing active session
-        $existingSession = ParkingSession::query()->where('plate_number', $plate)
+        $plate = strtoupper(preg_replace('/\s+/', '', $request->plate_number));
+        $existingSession = ParkingSession::query()
+            ->where(DB::raw("REPLACE(UPPER(plate_number), ' ', '')"), $plate)
             ->where('status', 'active')
             ->first();
+
 
         if ($existingSession) {
             return response()->json([

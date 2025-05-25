@@ -21,10 +21,10 @@ class ParkingSessionFactory extends Factory
             'plate_number' => strtoupper("RA" . $this->faker->randomLetter() . $this->faker->randomNumber(3) . $this->faker->randomLetter()),
             'entry_time' => $entry_time,
             'phone' => $this->faker->phoneNumber(),
-            'exit_time' => $exit_time,
-            'duration_minutes' => $minutes,
-            'amount' => Rate::calculateParkingFee(ceil($minutes / 60)),
-            'status'=>'completed'
+//            'exit_time' => $exit_time,
+//            'duration_minutes' => $minutes,
+//            'amount' => Rate::calculateParkingFee(ceil($minutes / 60)),
+//            'status'=>'completed'
         ];
     }
 }

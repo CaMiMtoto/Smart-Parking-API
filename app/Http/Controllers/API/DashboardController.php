@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use App\Models\ParkingSession;
 use Carbon\Carbon;
@@ -19,16 +20,16 @@ class DashboardController extends Controller
         $today = Carbon::today();
         $activeCars = ParkingSession::query()->whereNull('exit_time')->count();
 
-        $todayRevenue = ParkingSession::query()->whereDate('exit_time', $today)
+        $todayRevenue = (int)ParkingSession::query()->whereDate('exit_time', $today)
             ->sum('amount');
 
-        $totalRevenue = ParkingSession::query()->sum('amount');
+        $totalRevenue = (int)ParkingSession::query()->sum('amount');
 
         // Earnings breakdown
         $earnings = [];
         if ($filter === 'weekly') {
             // Start from this week's Monday
-            $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+            $startOfWeek = Carbon::now()->startOfWeek(CarbonInterface::MONDAY);
 
             $earnings = collect(range(0, 6))->map(function ($dayOffset) use ($startOfWeek) {
                 $date = $startOfWeek->copy()->addDays($dayOffset)->toDateString(); // 'YYYY-MM-DD'
@@ -37,12 +38,11 @@ class DashboardController extends Controller
                 return [
                     'date' => $date,
                     'day' => $dayName,
-                    'amount' => ParkingSession::whereDate('exit_time', $date)->sum('amount'),
+                    'amount' => (int)ParkingSession::query()->whereDate('exit_time', $date)->sum('amount'),
                 ];
             });
 
-        }
-        elseif ($filter === 'monthly') {
+        } elseif ($filter === 'monthly') {
             $earnings = collect(range(1, 12))->map(function ($month) {
                 return ParkingSession::query()->whereMonth('exit_time', $month)
                     ->whereYear('exit_time', now()->year)
