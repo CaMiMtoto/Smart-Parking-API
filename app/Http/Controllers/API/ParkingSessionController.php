@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Services\FlutterwavePaymentService;
 use App\Models\ParkingSession;
 use App\Models\Rate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ParkingSessionController
 {
+    protected FlutterwavePaymentService $paymentService;
+
+    public function __construct(FlutterwavePaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
 
     public function active(Request $request)
     {
@@ -126,11 +134,11 @@ class ParkingSessionController
 
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function checkOut(Request $request, ParkingSession $session)
     {
-        $request->validate([
+        $data = $request->validate([
             'payment_method' => ['required'],
             'phone_number' => ['nullable', 'string', 'max:15'],
         ]);
@@ -142,19 +150,35 @@ class ParkingSessionController
         $duration = ceil($diffInMinutes / 60);
         // Calculate amount
         $amount = $session->calculateAmount($duration);
+        $txRef = uniqid('pkg_');
+        $data['tx_ref'] = $txRef; // Unique reference
         // Update session
         $session->update([
             'exit_time' => $exitTime,
             'duration_minutes' => ceil($diffInMinutes),
             'amount' => $amount,
-            'status' => 'completed'
+            'status' => 'active',
+            'tx_ref' => $txRef
         ]);
-        $session->payments()->create([
-            'payment_method' => $request->payment_method,
-            'phone_number' => $request->phone_number,
-            'amount' => $amount,
-            'status'=>'status'
-        ]);
+
+        if ($data['payment_method'] == 'momo') {
+            $data['amount'] = $amount;
+            try {
+                $response = $this->paymentService->chargeRwandaMobileMoney($data);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Charge initiated',
+                    'redirect_url' => $response['meta']['authorization']['redirect'] ?? null,
+                    'flw_response' => $response,
+                ], 302);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Payment initiation failed: ' . $e->getMessage(),
+                ], 500);
+            }
+        }
         DB::commit();
         return response()->json([
             'message' => 'Car checked out successfully',

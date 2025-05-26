@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-//Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/dashboard', [DashboardController::class, 'index']);
@@ -20,8 +20,9 @@ Route::post('/login', [AuthController::class, 'login']);
     Route::post('/parking/checkout/{session}', [ParkingSessionController::class, 'checkOut']);
     Route::get('/parking-report', [ReportController::class, 'report']);
 
-//});
+});
 
+Route::post('/payment/webhook', [\App\Http\Controllers\WebhookController::class, 'handle']);
 
 
 
