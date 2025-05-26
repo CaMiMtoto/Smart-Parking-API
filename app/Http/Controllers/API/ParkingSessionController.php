@@ -125,21 +125,17 @@ class ParkingSessionController
     }
 
 
+    /**
+     * @throws \Throwable
+     */
     public function checkOut(Request $request, ParkingSession $session)
     {
-        /*   $request->validate([
-               'plate_number' => 'required|string|max:20',
-           ]);*/
+        $request->validate([
+            'payment_method' => ['required'],
+            'phone_number' => ['nullable', 'string', 'max:15'],
+        ]);
 
-//        $plate = strtoupper($request->plate_number);
-
-        /*     $session = ParkingSession::query()->where('plate_number', $plate)
-                 ->where('status', 'active')
-                 ->first();*/
-
-        /* if (!$session) {
-             return response()->json(['message' => 'No active session found for this car.'], 404);
-         }*/
+        DB::beginTransaction();
 
         $exitTime = now();
         $diffInMinutes = Carbon::parse($session->entry_time)->diffInMinutes($exitTime);
@@ -153,10 +149,13 @@ class ParkingSessionController
             'amount' => $amount,
             'status' => 'completed'
         ]);
-
-        // Trigger MoMo payment here (optional, to implement)
-        // if ($session->phone) { ... }
-
+        $session->payments()->create([
+            'payment_method' => $request->payment_method,
+            'phone_number' => $request->phone_number,
+            'amount' => $amount,
+            'status'=>'status'
+        ]);
+        DB::commit();
         return response()->json([
             'message' => 'Car checked out successfully',
             'data' => $session

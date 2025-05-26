@@ -23,7 +23,7 @@ class DashboardController extends Controller
         $todayRevenue = (int)ParkingSession::query()->whereDate('exit_time', $today)
             ->sum('amount');
 
-        $totalRevenue = (int)ParkingSession::query()->sum('amount');
+        $totalRevenue = (int)ParkingSession::query()->whereNotNull('exit_time')->sum('amount');
 
         // Earnings breakdown
         $earnings = [];

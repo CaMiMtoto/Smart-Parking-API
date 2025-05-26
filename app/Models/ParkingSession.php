@@ -43,4 +43,9 @@ class ParkingSession extends Model
         $minutes = $this->duration_minutes % 60;
         return sprintf('%dh %02dm', $hours, $minutes);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
