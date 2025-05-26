@@ -163,6 +163,7 @@ class ParkingSessionController
 
         if ($data['payment_method'] == 'momo') {
             $data['amount'] = $amount;
+            $data['email']="jeanpaulcami@live.com";
             try {
                 $response = $this->paymentService->chargeRwandaMobileMoney($data);
                 return response()->json([

@@ -27,7 +27,7 @@ class FlutterwavePaymentService
             'phone_number' => $data['phone_number'],
             'amount' => $data['amount'],
             'currency' => 'RWF',
-            'email' => null,
+            'email' => $data['email'],
             'tx_ref' => $data['tx_ref'],
         ];
 
