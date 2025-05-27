@@ -166,6 +166,7 @@ class ParkingSessionController
             $data['email']="jeanpaulcami@live.com";
             try {
                 $response = $this->paymentService->chargeRwandaMobileMoney($data);
+                DB::commit();
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Charge initiated',

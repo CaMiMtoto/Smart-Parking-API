@@ -10,13 +10,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-curl": "*",
         "flutterwavedev/flutterwave-v3": "^1.1",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
+        "laravel/slack-notification-channel": "^3.5",
         "laravel/tinker": "^2.10.1",
-        "tightenco/ziggy": "^2.4",
-        "ext-curl": "*"
+        "tightenco/ziggy": "^2.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -1,0 +1,30 @@
+{
+    "event": "charge.completed",
+    "data": {
+        "id": 9388123,
+        "tx_ref": "pkg_6835cc0b9ed03",
+        "flw_ref": "flwm3s4m0c1748356127223",
+        "device_fingerprint": "N/A",
+        "amount": 34000,
+        "currency": "RWF",
+        "charged_amount": 34986,
+        "app_fee": 986,
+        "merchant_fee": 0,
+        "processor_response": "Transaction Successful",
+        "auth_model": "MOBILEMONEY",
+        "ip": "52.209.154.143",
+        "narration": "CaMi",
+        "status": "successful",
+        "payment_type": "mobilemoneyrw",
+        "created_at": "2025-05-27T14:28:46.000Z",
+        "account_id": 221601,
+        "customer": {
+            "id": 3300647,
+            "name": "CaMi",
+            "phone_number": "0780661813",
+            "email": "ravesb_99dcd3ce80e685a3ccf9_jeanpaulcami@live.com",
+            "created_at": "2025-05-26T12:37:08.000Z"
+        }
+    },
+    "event.type": "MOBILEMONEYRW_TRANSACTION"
+}

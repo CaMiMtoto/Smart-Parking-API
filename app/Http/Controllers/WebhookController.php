@@ -24,12 +24,17 @@ class WebhookController extends Controller
 
                 // Example: Update your ParkingSession model
                 $session = ParkingSession::query()->where('tx_ref', $txRef)->first();
-                $session->update(['paid' => true, 'payment_amount' => $amount]);
+                $session->update([
+                    'status'=>'completed',
+                    'amount' => $amount,
+                    'phone'=> $phone,
+                ]);
                 $session->payments()->create([
                     'payment_method' => "momo",
                     'phone_number' => $phone,
                     'amount' => $amount,
-                    'status' => 'paid'
+                    'status' => 'paid',
+                    'response'=>$payment
                 ]);
                 return response()->json(['message' => 'Payment recorded'], 200);
             }
