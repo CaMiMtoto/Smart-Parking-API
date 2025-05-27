@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\ParkingSessionController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\WebhookController;
@@ -20,11 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/parking/preview-check-out', [ParkingSessionController::class, 'previewCheckOut']);
     Route::post('/parking/checkout/{session}', [ParkingSessionController::class, 'checkOut']);
     Route::get('/parking-report', [ReportController::class, 'report']);
+    Route::get('/payment-status/{session}', [PaymentController::class, 'checkPayment']);
 
 });
 
 Route::post('/payment/webhook', [WebhookController::class, 'handle']);
-
 
 
 Route::get('/rates', [RateController::class, 'index']);

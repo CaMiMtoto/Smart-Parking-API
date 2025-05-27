@@ -163,7 +163,7 @@ class ParkingSessionController
 
         if ($data['payment_method'] == 'momo') {
             $data['amount'] = $amount;
-            $data['email']="jeanpaulcami@live.com";
+            $data['email'] = "jeanpaulcami@live.com";
             try {
                 $response = $this->paymentService->chargeRwandaMobileMoney($data);
                 DB::commit();
@@ -172,6 +172,7 @@ class ParkingSessionController
                     'message' => 'Charge initiated',
                     'redirect_url' => $response['meta']['authorization']['redirect'] ?? null,
                     'flw_response' => $response,
+                    'data' => $session
                 ], 302);
             } catch (\Exception $e) {
                 DB::rollBack();
