@@ -10,7 +10,8 @@ class ParkingSession extends Model
     use HasFactory;
     protected $casts = [
         'entry_time' => 'datetime',
-        'exit_time' => 'datetime'
+        'exit_time' => 'datetime',
+
     ];
 
     public function calculateAmount($duration): float|int|null
