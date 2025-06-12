@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/parking/active', [ParkingSessionController::class, 'active']);
+    Route::get('/parking/history', [ParkingSessionController::class, 'logs']);
     Route::post('/parking/check-in', [ParkingSessionController::class, 'checkIn']);
     Route::post('/parking/preview-check-out', [ParkingSessionController::class, 'previewCheckOut']);
     Route::post('/parking/checkout/{session}', [ParkingSessionController::class, 'checkOut']);

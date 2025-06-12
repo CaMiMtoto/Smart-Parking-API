@@ -193,4 +193,30 @@ class ParkingSessionController
     {
         return Rate::calculateParkingFee($durationHours);
     }
+
+    public function logs()
+    {
+        $search = request('search');
+        $from = request('from');
+        $to = request('to');
+        $paymentMethod = request('payment_method');
+        $logs = ParkingSession::query()
+            ->whereNotNull('exit_time')
+            ->when($search, function ($query) use ($search) {
+                return $query->where('plate_number', 'like', "%{$search}%");
+            })
+            ->when($from, function ($query) use ($from) {
+                return $query->whereDate('entry_time', '>=', $from);
+            })
+            ->when($to, function ($query) use ($to) {
+                return $query->whereDate('entry_time', '<=', $to);
+            })
+            ->when(request('payment_method'), function ($query) use ($paymentMethod) {
+                return $query->where('payment_method', $paymentMethod);
+            })
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($logs);
+    }
 }

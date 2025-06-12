@@ -11,7 +11,7 @@ class ParkingSession extends Model
     protected $casts = [
         'entry_time' => 'datetime',
         'exit_time' => 'datetime',
-
+        'amount' => 'int'
     ];
 
     public function calculateAmount($duration): float|int|null
