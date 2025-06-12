@@ -214,7 +214,7 @@ class ParkingSessionController
             ->when(request('payment_method'), function ($query) use ($paymentMethod) {
                 return $query->where('payment_method', $paymentMethod);
             })
-            ->latest()
+            ->latest('exit_time')
             ->paginate(10);
 
         return response()->json($logs);
