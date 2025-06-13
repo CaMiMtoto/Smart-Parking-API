@@ -157,7 +157,7 @@ class ParkingSessionController
             'exit_time' => $exitTime,
             'duration_minutes' => ceil($diffInMinutes),
             'amount' => $amount,
-            'status' => 'active',
+            'status' => 'completed',
             'tx_ref' => $txRef
         ]);
 
